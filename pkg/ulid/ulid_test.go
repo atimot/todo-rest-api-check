@@ -1,0 +1,45 @@
+package ulid
+
+import "testing"
+
+func TestIsValid(t *testing.T) {
+	type args struct {
+		s string
+	}
+
+	tests := []struct {
+		name string
+		args args
+		want bool
+	}{
+		{
+			name: "正常系",
+			args: args{
+				s: NewUlid(),
+			},
+			want: true,
+		},
+		{
+			name: "正常系: 空文字",
+			args: args{
+				s: "",
+			},
+			want: false,
+		},
+		{
+			name: "正常系: 32文字",
+			args: args{
+				s: "12345678901234567890123456789012",
+			},
+			want: false,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := IsValid(tt.args.s); got != tt.want {
+				t.Errorf("IsValid() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
