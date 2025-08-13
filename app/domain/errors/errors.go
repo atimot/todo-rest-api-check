@@ -14,6 +14,14 @@ var (
 	ErrNotFoundUser     = newErrDomain("ErrNotFoundUser", "user not found")
 )
 
+// タスク関係のドメインエラー
+var (
+	ErrNotFoundTask           = newErrDomain("ErrNotFoundTask", "task not found")
+	ErrContentEmpty           = newErrDomain("ErrContentEmpty", "Do not empty the content")
+	ErrInvalidTaskState       = newErrDomain("ErrInvalidTaskState", "invalid task state , please select todo/doing/done")
+	ErrForbiddenTaskOperation = newErrDomain("ErrForbiddenTaskOperation", "can't operate others tasks")
+)
+
 // ドメインエラー
 type ErrDomain struct {
 	err error
