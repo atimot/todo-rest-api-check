@@ -1,0 +1,55 @@
+package user
+
+import (
+	"context"
+	"testing"
+
+	"github.com/atimot/app/domain/user"
+	"github.com/google/go-cmp/cmp"
+	"go.uber.org/mock/gomock"
+)
+
+func TestUser_FetuchUsersUsecase_Run(t *testing.T) {
+	tests := []struct {
+		name    string
+		mockFn  func(mr *user.MockUserRepository)
+		want    []*FetchUserUsecaseOutputDTO
+		wantErr bool
+	}{
+		{
+			name: "正常形: 登録されている全てのユーザーを取得する",
+			mockFn: func(mr *user.MockUserRepository) {
+				mr.EXPECT().FetchAllUsers(gomock.Any()).Return(
+					user.Users{
+						user.ReconstructUser("1", "", "user1", ""),
+						user.ReconstructUser("2", "", "user2", ""),
+						user.ReconstructUser("3", "", "user3", ""),
+					}, nil,
+				)
+			},
+			want: []*FetchUserUsecaseOutputDTO{
+				{ID: "1", Name: "user1"},
+				{ID: "2", Name: "user2"},
+				{ID: "3", Name: "user3"},
+			},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctrl := gomock.NewController(t)
+			mockUserRepository := user.NewMockUserRepository(ctrl)
+			tt.mockFn(mockUserRepository)
+			fetchUsersUsecase := NewFetchUsersUsecase(mockUserRepository)
+			ctx := context.Background()
+			got, err := fetchUsersUsecase.Run(ctx)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("FetchUsersUsecase.Run = error:%v,wantErr:%v", err, tt.wantErr)
+			}
+			if diff := cmp.Diff(got, tt.want); diff != "" {
+				t.Errorf("FetchUsersUsecase.Run() -got,+want :%v ", diff)
+			}
+		})
+	}
+}
