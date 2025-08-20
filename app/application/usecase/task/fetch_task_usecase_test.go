@@ -63,7 +63,7 @@ func TestTask_FetchTaskUsecase_Run(t *testing.T) {
 		mockTaskQueryService := NewMockTaskQueryService(ctrl)
 		tt.mockFn(mockTaskQueryService)
 
-		sut := NewFetchTasksUsecase(mockTaskQueryService)
+		sut := NewFetchTaskUsecase(mockTaskQueryService)
 		ctx := context.Background()
 		got, err := sut.Run(ctx, tt.input)
 		// 期待するエラー型を設定している場合は、エラーを比較

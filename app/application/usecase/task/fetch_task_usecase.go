@@ -2,17 +2,17 @@ package task
 
 import "context"
 
-type FetchTasksUsecase struct {
+type FetchTaskUsecase struct {
 	taskQueryService TaskQueryService
 }
 
-func NewFetchTasksUsecase(taskQueryService TaskQueryService) *FetchTasksUsecase {
-	return &FetchTasksUsecase{
+func NewFetchTaskUsecase(taskQueryService TaskQueryService) *FetchTaskUsecase {
+	return &FetchTaskUsecase{
 		taskQueryService: taskQueryService,
 	}
 }
 
-func (ftu *FetchTasksUsecase) Run(ctx context.Context, input FetchTaskUsecaseInputDTO) (*FetchTaskUsecaseOutputDTO, error) {
+func (ftu *FetchTaskUsecase) Run(ctx context.Context, input FetchTaskUsecaseInputDTO) (*FetchTaskUsecaseOutputDTO, error) {
 	dto, err := ftu.taskQueryService.FetchTaskById(ctx, input.ID)
 	if err != nil {
 		return nil, err
