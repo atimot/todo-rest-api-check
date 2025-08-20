@@ -59,24 +59,27 @@ func TestTask_FetchTaskUsecase_Run(t *testing.T) {
 		},
 	}
 	for _, tt := range tests {
-		ctrl := gomock.NewController(t)
-		mockTaskQueryService := NewMockTaskQueryService(ctrl)
-		tt.mockFn(mockTaskQueryService)
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			ctrl := gomock.NewController(t)
+			mockTaskQueryService := NewMockTaskQueryService(ctrl)
+			tt.mockFn(mockTaskQueryService)
 
-		sut := NewFetchTaskUsecase(mockTaskQueryService)
-		ctx := context.Background()
-		got, err := sut.Run(ctx, tt.input)
-		// 期待するエラー型を設定している場合は、エラーを比較
-		if tt.errType != nil && !errors.Is(err, tt.errType) {
-			t.Errorf("fetchTaskUsecase.Run = error:%v,want errYType:%v", err, tt.errType)
-			return
-		}
-		if (err != nil) != tt.wantErr {
-			t.Errorf("fetchTaskUsecase.Run = error:%v,wantErr:%v", err, tt.wantErr)
-			return
-		}
-		if diff := cmp.Diff(got, tt.want); diff != "" {
-			t.Errorf("fetchTaskUsecase.Run() -got,+want :%v ", diff)
-		}
+			sut := NewFetchTaskUsecase(mockTaskQueryService)
+			ctx := context.Background()
+			got, err := sut.Run(ctx, tt.input)
+			// 期待するエラー型を設定している場合は、エラーを比較
+			if tt.errType != nil && !errors.Is(err, tt.errType) {
+				t.Errorf("fetchTaskUsecase.Run = error:%v,want errYType:%v", err, tt.errType)
+				return
+			}
+			if (err != nil) != tt.wantErr {
+				t.Errorf("fetchTaskUsecase.Run = error:%v,wantErr:%v", err, tt.wantErr)
+				return
+			}
+			if diff := cmp.Diff(got, tt.want); diff != "" {
+				t.Errorf("fetchTaskUsecase.Run() -got,+want :%v ", diff)
+			}
+		})
 	}
 }
